@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Owner Dashboard - Property Listings</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+  <div class="wrapper">
+    <header class="main-header">
+      <div class="logo">
+        <h1>PropertyConnect</h1>
+      </div>
+      <div class="user-panel">
+        <span id="user-name">Welcome, <span id="username-display">Owner</span></span>
+        <a href="login.html" id="logout">Logout</a>
+      </div>
+    </header>
+    
+    <main class="dashboard-container">
+      <h2>Property Owner Dashboard</h2>
+      <div class="dashboard-date">
+        <i class="far fa-calendar-alt"></i> <span id="current-date">April 20, 2025</span>
+      </div>
+      
+      <div class="dashboard-menu-grid">
+        <a href="owner_listing.html" class="menu-card">
+          <div class="menu-icon"><i class="fas fa-home"></i></div>
+          <div class="menu-title">My Listings</div>
+        </a>
+        
+        <a href="create_listing.html" class="menu-card">
+          <div class="menu-icon"><i class="fas fa-plus-circle"></i></div>
+          <div class="menu-title">Create Listing</div>
+        </a>
+        
+        <a href="inquiries.html" class="menu-card">
+          <div class="menu-icon"><i class="fas fa-envelope"></i></div>
+          <div class="menu-title">Inquiries</div>
+        </a>
+        
+        <a href="analytics.html" class="menu-card">
+          <div class="menu-icon"><i class="fas fa-chart-line"></i></div>
+          <div class="menu-title">Analytics</div>
+        </a>
+      </div>
+      
+      <div class="quick-stats">
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-home"></i></div>
+          <div class="stat-number" id="listings-count">3</div>
+          <div class="stat-label">Active Listings</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-envelope"></i></div>
+          <div class="stat-number" id="inquiries-count">8</div>
+          <div class="stat-label">New Inquiries</div>
+        </div>
+        
+        
+      </div>
+      
+      <div class="alert-container" id="inquiry-alert" style="display: none;">
+        
+        <div class="alert alert-warning">
+          <i class="fas fa-exclamation-triangle"></i>
+          <div class="alert-content">
+            <h4>Attention Required</h4>
+            <p>You have 5+ new inquiries waiting for a response.</p>
+            <a href="inquiries.html" class="alert-link">View Inquiries</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="dashboard-grid">
+        <div class="dashboard-card">
+          <div class="card-header">
+            <h3><i class="fas fa-home"></i> Recent Listings</h3>
+          </div>
+          <div class="card-content" id="recent-listings">
+            <!-- Recent listings injected here -->
+          </div>
+          <div class="card-actions">
+            <a href="owner_listing.html" class="btn btn-sm">View All Listings</a>
+            <a href="create_listing.html" class="btn btn-sm btn-outline">+ Add Listing</a>
+          </div>
+        </div>
+        
+        <div class="dashboard-card">
+          <div class="card-header">
+            <h3><i class="fas fa-envelope"></i> Recent Inquiries</h3>
+          </div>
+          <div class="card-content" id="recent-inquiries">
+            <!-- Recent inquiries injected here -->
+          </div>
+          <div class="card-actions">
+            <a href="inquiries.html" class="btn btn-sm">View All Inquiries</a>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="/js/owner_dashboard.js"></script>
+  <script src="js/common.js"></script>
+</body>
+</html>

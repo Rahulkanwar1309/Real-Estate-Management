@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Inquiries - PropertyConnect</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+  <div class="wrapper">
+    <header class="main-header">
+      <div class="logo"><h1>PropertyConnect</h1></div>
+      <div class="user-panel">
+        <span id="user-name">Welcome, <span id="username-display">User</span></span>
+        <a href="login.html" id="logout">Logout</a>
+      </div>
+    </header>
+
+    <nav>
+      <a id="dash-link" href="owner_dashboard.html">Dashboard</a>
+      <a href="owner_listing.html">My Listings</a>
+      <a href="create_listing.html">Create Listing</a>
+      <a href="inquiries.html" class="active">Inquiries</a>
+      <a href="analytics.html">Analytics</a>
+    </nav>
+
+    <main class="dashboard-container">
+      <h2>Inquiries</h2>
+      <div id="inquiries-container" class="card-grid">
+        <!-- JS will inject inquiry cards here -->
+      </div>
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Update Dashboard link based on user role
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      const dashLink = document.getElementById('dash-link');
+      if (user.role === 'tenant') {
+        dashLink.href = 'tenant_dashboard.html';
+      } else {
+        dashLink.href = 'owner_dashboard.html';
+      }
+    });
+  </script>
+  <script src="js/inquiries.js" defer></script>
+  <script src="js/common.js"></script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login - Premium Real Estate Management</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body class="login-page">
+  <div class="container">
+    <h2>Welcome Back</h2>
+    <div class="error" id="error" style="display: none;"><i class="fas fa-exclamation-circle"></i> <span id="error-message">Invalid credentials</span></div>
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="role"><i class="fas fa-user-tag"></i> I am a:</label>
+        <select id="role" name="role" required>
+          <option value="">Select Role</option>
+          <option value="owner">Property Owner/Manager</option>
+          <option value="tenant">Tenant</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="username"><i class="fas fa-user"></i> Username</label>
+        <input type="text" id="username" name="username" required placeholder="Enter your username">
+      </div>
+      <div class="form-group">
+        <label for="password"><i class="fas fa-key"></i> Password</label>
+        <input type="password" id="password" name="password" required placeholder="Enter your password">
+      </div>
+      <button type="submit" class="btn"><i class="fas fa-sign-in-alt"></i> Sign In</button>
+    </form>
+    <div class="login-footer">
+      <a href="register.html"><i class="fas fa-user-plus"></i> Create Account</a>
+      <a href="index.html"><i class="fas fa-arrow-left"></i> Back to Home</a>
+    </div>
+  </div>
+  <script src="js/login.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const loginForm = document.getElementById('loginForm');
+      const errorDiv = document.getElementById('error');
+      const errorMessage = document.getElementById('error-message');
+
+      loginForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Hide previous error message
+        errorDiv.style.display = 'none';
+        
+        // Get form data
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const role = document.getElementById('role').value;
+        
+        // Validate
+        if (!role) {
+          errorMessage.textContent = 'Please select a role';
+          errorDiv.style.display = 'block';
+          return;
+        }
+        
+        // Prepare data
+        const formData = {
+          username: username,
+          password: password,
+          role: role
+        };
+        
+        try {
+          // Send login request
+          const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+          });
+          
+          const data = await response.json();
+          
+          if (response.ok) {
+            // Store token and user info in localStorage
+            localStorage.setItem('authToken', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            
+            // Redirect based on role
+            if (role === 'tenant') {
+              window.location.href = 'tenant_dashboard.html';
+            } else {
+              window.location.href = 'owner_dashboard.html';
+            }
+          } else {
+            // Show error message
+            errorMessage.textContent = data.message || 'Login failed. Please check your credentials.';
+            errorDiv.style.display = 'block';
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          errorMessage.textContent = 'An error occurred. Please try again.';
+          errorDiv.style.display = 'block';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

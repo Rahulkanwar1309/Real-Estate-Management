@@ -1,0 +1,43 @@
+<!-- listing_owner.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Listings - PropertyConnect</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+  <div class="wrapper">
+    <header class="main-header">
+      <div class="logo"><h1>PropertyConnect</h1></div>
+      <div class="user-panel">
+        <span id="user-name">Welcome, <span id="username-display">Owner</span></span>
+        <a href="login.html" id="logout">Logout</a>
+      </div>
+    </header>
+    <nav>
+      <a href="owner_dashboard.html">Dashboard</a>
+      <a href="owner_listing.html" class="active">My Listings</a>
+      <a href="create_listing.html">Create Listing</a>
+      <a href="inquiries.html">Inquiries</a>
+      <a href="analytics.html">Analytics</a>
+    </nav>
+    <main class="dashboard-container">
+      <h2>My Listings</h2>
+      <div class="filter-controls">
+        <div class="form-group">
+          <input type="text" id="searchListings" placeholder="Search listings...">
+        </div>
+        
+      </div>
+      <div class="card-grid" id="listings-container">
+        <!-- Listing cards injected here -->
+      </div>
+    </main>
+  </div>
+  <script src="js/listing_owner.js"></script>
+  <script src="js/common.js"></script>
+</body>
+</html>

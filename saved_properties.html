@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Saved Properties - PropertyConnect</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+  <div class="wrapper">
+    <header class="main-header">
+      <div class="logo"><h1>PropertyConnect</h1></div>
+      <div class="user-panel">
+        <span id="user-name">Welcome, <span id="username-display">Tenant</span></span>
+        <a href="login.html" id="logout">Logout</a>
+      </div>
+    </header>
+    <nav>
+      <a href="tenant_dashboard.html">Dashboard</a>
+      <a href="saved_properties.html" class="active">Saved Properties</a>
+    </nav>
+    <main class="dashboard-container">
+      <h2>My Saved Properties</h2>
+      <div class="card-grid" id="saved-properties-container">
+        <!-- Property cards injected here -->
+      </div>
+    </main>
+  </div>
+
+  <!-- Property Details Modal -->
+  <div id="propertyModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <div id="propertyDetails"></div>
+    </div>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('saved-properties-container');
+      const modal = document.getElementById('propertyModal');
+      const propertyDetails = document.getElementById('propertyDetails');
+      const closeModal = document.querySelector('.close-modal');
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      
+      // Get liked properties from localStorage
+      let likedProperties = JSON.parse(localStorage.getItem('likedProperties') || '[]');
+      
+      // Close modal when clicking the X
+      if (closeModal) {
+        closeModal.addEventListener('click', () => {
+          modal.style.display = 'none';
+        });
+      }
+
+      // Close modal when clicking outside the content
+      window.addEventListener('click', (event) => {
+        if (event.target === modal) {
+          modal.style.display = 'none';
+        }
+      });
+
+      // Function to remove a property from liked properties
+      function removeLikedProperty(propertyId) {
+        likedProperties = likedProperties.filter(p => p.id != propertyId);
+        localStorage.setItem('likedProperties', JSON.stringify(likedProperties));
+        renderSavedProperties();
+      }
+
+      // Function to show property details
+      function showPropertyDetails(property) {
+        propertyDetails.innerHTML = `
+          <div class="property-detail-header">
+            <h3>${property.title}</h3>
+            <p><i class="fas fa-map-marker-alt"></i> ${property.address}</p>
+          </div>
+          
+          <div class="property-detail-section">
+            <div class="property-detail-item">
+              <div class="property-detail-label">Price:</div>
+              <div class="property-detail-value">$${property.price}/month</div>
+            </div>
+            <div class="property-detail-item">
+              <div class="property-detail-label">Bedrooms:</div>
+              <div class="property-detail-value">${property.bedrooms}</div>
+            </div>
+            <div class="property-detail-item">
+              <div class="property-detail-label">Bathrooms:</div>
+              <div class="property-detail-value">${property.bathrooms}</div>
+            </div>
+            ${property.zipcode ? `
+              <div class="property-detail-item">
+                <div class="property-detail-label">Zip Code:</div>
+                <div class="property-detail-value">${property.zipcode}</div>
+              </div>` : ''}
+          </div>
+          
+          <div class="property-detail-section">
+            <h4>Description</h4>
+            <p>${property.description || 'No description provided.'}</p>
+          </div>
+          
+          <div class="property-detail-actions">
+            <button data-id="${property.id}" class="btn inquire-property-btn">Inquire About This Property</button>
+            <button data-id="${property.id}" class="btn btn-outline remove-property-btn">
+              <i class="fas fa-trash"></i> Remove from Saved
+            </button>
+          </div>
+        `;
+        
+        // Add inquire button functionality
+        propertyDetails.querySelector('.inquire-property-btn').addEventListener('click', async () => {
+          const listing_id = property.id;
+
+          // 1) Prompt for tenant's email
+          const email = prompt('Please enter your email so the owner can follow up:');
+          if (!email) {
+            alert('Email is required to send an inquiry.');
+            return;
+          }
+
+          // 2) Prompt for optional note
+          const note = prompt('Enter a message for the owner (optional):', '');
+          const message = `Email: ${email}` + (note ? `\nMessage: ${note}` : '');
+
+          try {
+            const resp = await fetch('/api/inquiries', {
+              method: 'POST',
+              headers: {'Content-Type':'application/json'},
+              body: JSON.stringify({ listing_id, tenant_id: user.id, message })
+            });
+
+            if (resp.ok) {
+              alert('Inquiry sent! The owner will reach out via email.');
+              modal.style.display = 'none';
+            } else {
+              const err = await resp.json();
+              alert('Error: ' + (err.message || err.msg || 'Unable to send inquiry'));
+            }
+          } catch (e) {
+            console.error(e);
+            alert('Error sending inquiry.');
+          }
+        });
+        
+        // Add remove button functionality
+        propertyDetails.querySelector('.remove-property-btn').addEventListener('click', () => {
+          if (confirm('Remove this property from your saved list?')) {
+            removeLikedProperty(property.id);
+            modal.style.display = 'none';
+          }
+        });
+        
+        modal.style.display = 'block';
+      }
+
+      // Function to render saved properties
+      function renderSavedProperties() {
+        if (likedProperties.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <i class="far fa-heart empty-icon"></i>
+              <h3>No Saved Properties</h3>
+              <p>Properties you like will appear here. Browse available properties and click "Like Property" to save them for later viewing.</p>
+              <a href="tenant_dashboard.html" class="btn">Browse Properties</a>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = likedProperties.map(property => `
+          <div class="property-card" data-id="${property.id}">
+            <div class="property-info">
+              <h4>${property.title}</h4>
+              <p><i class="fas fa-map-marker-alt"></i> ${property.address}</p>
+              <p><strong>$${property.price}/mo</strong></p>
+              <p><i class="fas fa-bed"></i> ${property.bedrooms} bed · 
+                 <i class="fas fa-bath"></i> ${property.bathrooms} bath</p>
+              <div class="card-actions">
+                <button data-id="${property.id}" class="btn btn-sm inquire-btn">Inquire</button>
+                <button data-id="${property.id}" class="btn btn-sm view-details-btn">View Details</button>
+                <button data-id="${property.id}" class="btn btn-sm btn-outline remove-btn">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        `).join('');
+
+        // Make property cards clickable to show details
+        document.querySelectorAll('.view-details-btn, .property-card').forEach(element => {
+          element.addEventListener('click', (e) => {
+            // Don't trigger if other buttons were clicked
+            if (e.target.classList.contains('inquire-btn') || 
+                e.target.classList.contains('remove-btn') || 
+                (element.classList.contains('property-card') && 
+                 (e.target.classList.contains('inquire-btn') || 
+                  e.target.classList.contains('view-details-btn') || 
+                  e.target.classList.contains('remove-btn')))) {
+              return;
+            }
+            
+            const propertyId = element.dataset.id || element.closest('.property-card').dataset.id;
+            const property = likedProperties.find(p => p.id == propertyId);
+            if (property) {
+              showPropertyDetails(property);
+            }
+          });
+        });
+
+        // Set up inquire buttons
+        document.querySelectorAll('.inquire-btn').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const listing_id = btn.dataset.id;
+            const email = prompt('Please enter your email so the owner can follow up:');
+            if (!email) {
+              alert('Email is required to send an inquiry.');
+              return;
+            }
+
+            const note = prompt('Enter a message for the owner (optional):', '');
+            const message = `Email: ${email}` + (note ? `\nMessage: ${note}` : '');
+
+            try {
+              const resp = await fetch('/api/inquiries', {
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({ listing_id, tenant_id: user.id, message })
+              });
+
+              if (resp.ok) {
+                alert('Inquiry sent! The owner will reach out via email.');
+              } else {
+                const err = await resp.json();
+                alert('Error: ' + (err.message || err.msg || 'Unable to send inquiry'));
+              }
+            } catch (e) {
+              console.error(e);
+              alert('Error sending inquiry.');
+            }
+          });
+        });
+
+        // Set up remove buttons
+        document.querySelectorAll('.remove-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const propertyId = btn.dataset.id;
+            if (confirm('Remove this property from your saved list?')) {
+              removeLikedProperty(propertyId);
+            }
+          });
+        });
+      }
+
+      // Initialize page
+      renderSavedProperties();
+    });
+  </script>
+</body>
+</html>

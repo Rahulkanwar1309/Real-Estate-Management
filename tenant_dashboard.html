@@ -1,0 +1,54 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tenant Dashboard - Property Listings</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+  <div class="wrapper">
+    <header class="main-header">
+      <div class="logo"><h1>PropertyConnect</h1></div>
+      <div class="user-panel">
+        <span id="user-name">Welcome, <span id="username-display">Tenant</span></span>
+        <a href="login.html" id="logout">Logout</a>
+      </div>
+    </header>
+    <nav>
+      <a href="tenant_dashboard.html" class="active">Dashboard</a>
+      <a href="saved_properties.html">Saved Properties</a>
+    </nav>
+    <main class="dashboard-container">
+      <h2>Available Properties</h2>
+      <div class="filter-controls">
+        <div class="form-group">
+          <input type="text" id="searchInput" placeholder="Search by location or keyword">
+        </div>
+        <div class="form-group">
+          <select id="priceFilter">
+            <option value="">All Prices</option>
+            <option value="0-999">$0 - $999</option>
+            <option value="1000-1999">$1,000 - $1,999</option>
+            <option value="2000-3999">$2,000 - $3,999</option>
+            <option value="4000-5999">$4,000 - $5,999</option>
+            <option value="6000+">$6,000+</option>
+          </select>
+        </div>
+      </div>
+      <div id="propertyModal" class="modal">
+        <div class="modal-content">
+          <span class="close-modal">&times;</span>
+          <div id="propertyDetails"></div>
+        </div>
+      </div>
+      
+      <div class="card-grid" id="properties-container">
+        <!-- Property cards injected here -->
+      </div>
+    </main>
+  </div>
+  <script src="js/tenant_dashboard.js"></script>
+  <script src="js/common.js"></script>
+</body>
+</html>
