@@ -21,8 +21,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             <div class="property-info">
               <h4>${l.title}</h4>
               <p><i class="fas fa-map-marker-alt"></i> ${l.address}</p>
-              <p><i class="fas fa-bed"></i> ${l.bedrooms} bed · 
-                 <i class="fas fa-bath"></i> ${l.bathrooms} bath</p>
+              <p><i class="fas fa-bed"></i> ${l.bedrooms} bed </p>   
+              <p><i class="fas fa-bath"></i> ${l.bathrooms} bath</p>
               <p><strong>$${l.price}/mo</strong></p>
             </div>
             <div class="card-actions">

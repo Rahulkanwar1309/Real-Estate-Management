@@ -69,7 +69,6 @@ document.addEventListener('DOMContentLoaded', async () => {
           .slice(0, 3)
           .map(l => `
             <div class="listing-mini-item">
-              <img src="/api/placeholder/100/100" alt="${l.title}" class="listing-mini-image">
               <div class="listing-mini-details">
                 <h4>${l.title}</h4>
                 <p><i class="fas fa-map-marker-alt"></i> ${l.address}</p>
